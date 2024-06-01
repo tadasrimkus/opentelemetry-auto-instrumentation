@@ -13,10 +13,7 @@
   "autoload": {
     "psr-4": {
       "Buratinas\\OpenTelemetryAutoInstrumentation\\": "src/"
-    },
-    "files": [
-      "_register.php"
-    ]
+    }
   },
   "license": "MIT",
   "authors": [
