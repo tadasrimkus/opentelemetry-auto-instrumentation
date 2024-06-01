@@ -2,6 +2,8 @@
 
 namespace Buratinas\OpenTelemetryAutoInstrumentation\Instrumentation;
 
+use Buratinas\OpenTelemetryAutoInstrumentation\Instrumentation\Extractor\InformationExtractorInterface;
+
 /**
  * Class DynamicInstrumentationFactory
  * Uses static extractor chain to extract information from the object and arguments
@@ -15,28 +17,20 @@ class DynamicInstrumentationFactory
 
     public static function autoRegister(): void
     {
-        array_walk(self::$collectors, function($collectorInformation) {
-            class_exists($collectorInformation['class']) &&
-            method_exists($collectorInformation['class'], $collectorInformation['method']) &&
-            DynamicInstrumentation::register($collectorInformation['class'], $collectorInformation['method']);
-        });
-
-        array_walk(self::$extractors, function($extractor) {
-            DynamicInstrumentation::addExtractor($extractor);
-        });
+        array_walk(self::$collectors, fn($collector) => self::addCollector($collector['class'], $collector['method']));
+        array_walk(self::$extractors, fn($extractor) => self::addExtractor($extractor));
     }
 
-    public static function addExtractor(string $extractor): void
+    public static function addExtractor(mixed $extractor): void
     {
-        self::$extractors[] = $extractor;
+        $extractor instanceof InformationExtractorInterface &&
+        DynamicInstrumentation::addExtractor($extractor);
     }
 
     public static function addCollector(string $collector, string $method): void
     {
-        $key = sprintf('%s::%s', $collector, $method);
-        self::$collectors[$key] = [
-            'method' => $method,
-            'class' => $collector
-        ];
+        class_exists($collector) &&
+        method_exists($collector, $method) &&
+        DynamicInstrumentation::register($collector, $method);
     }
 }
