@@ -29,7 +29,7 @@ class DynamicInstrumentationFactory
 
     public static function addCollector(string $collector, string $method): void
     {
-        class_exists($collector) &&
+        (class_exists($collector) || interface_exists($collector)) &&
         method_exists($collector, $method) &&
         DynamicInstrumentation::register($collector, $method);
     }
