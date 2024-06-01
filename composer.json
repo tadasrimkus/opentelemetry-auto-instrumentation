@@ -5,10 +5,7 @@
   "require": {
     "php": "^8.0",
     "ext-opentelemetry": "*",
-    "open-telemetry/api": "^1.0",
-    "open-telemetry/sdk": "^1.0",
-    "symfony/http-client": "^7.1",
-    "nyholm/psr7": "^1.8"
+    "open-telemetry/api": "^1.0"
   },
   "autoload": {
     "psr-4": {
